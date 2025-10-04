@@ -14,9 +14,9 @@
   let liveBullet
   let isDisabled = $state(false)
   let inputChange = $state(false)
-  let isChoiceMode = $state(false)
-  let choiceText1 = $state("")
-  let choiceText2 = $state("")
+  // let isChoiceMode = $state(false)
+  // let choiceText1 = $state("")
+  // let choiceText2 = $state("")
   let position = $state({cx: 75, cy: 28}) // 1
   let bulletPos = $state([
     {cx: 75, cy: 28},
@@ -153,9 +153,9 @@
       <span>You coward</span>
     {/if}
   {:else}
-    {#if bullets.length >= 1}
+    {#if bullets.length >= 1 && gamestate == 0}
       <span>Will you survive {chance} rounds?</span>
-    {:else}
+    {:else if bullets.length <= 1 && gamestate == 0}
       <span>Will you survive {chance} round?</span>
     {/if}
 
