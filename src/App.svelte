@@ -1,6 +1,6 @@
 <script>
-  import { cubicIn } from "svelte/easing";
-  import { fade } from "svelte/transition";
+  // import { cubicIn } from "svelte/easing";
+  // import { fade } from "svelte/transition";
 
   let debug = false
   let bullets = $state([1, 2, 3, 4, 5, 6])
@@ -100,11 +100,11 @@
   </div> -->
   {#if gamestate == 1}
     <div class="resultBox" style="background-color: mediumseagreen;">
-      <span class="result">Win</span>
+      <span class="result">You Survived</span>
     </div>
   {:else if gamestate == 2}
     <div class="resultBox" style="background-color: tomato;">
-      <span class="result">Loss</span>
+      <span class="result">You Died</span>
     </div>
   {/if}
 
@@ -137,8 +137,6 @@
     {:else if chance >= 1 && inputChange == true}
       <span>You coward</span>
     {/if}
-  {:else}
-    <span>{chance}</span>
   {/if}
   {#if tries.length == 5}
     <button id="giveUpButton" onclick={() => reset()}>Give Up</button>
@@ -147,6 +145,11 @@
     <button onclick={() => reset()}>Reset</button>
   {/if}
   <span>{text}</span>
+  {#if bullets.length >= 1}
+      <span>{bullets.length} Bullets Left</span>
+    {:else}
+      <span>{bullets.length} Bullet Left</span>
+    {/if}
   </div>
 
   <div class="gun">
