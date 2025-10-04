@@ -120,6 +120,11 @@
     {#if debug}
     <span>Tries: {tries}</span>
     {/if} 
+    {#if bullets.length >= 1}
+      <span>{bullets.length} Bullets Left</span>
+    {:else}
+      <span>{bullets.length} Bullet Left</span>
+    {/if}
   {/if}
 
   {#if debug}
@@ -145,11 +150,7 @@
     <button onclick={() => reset()}>Reset</button>
   {/if}
   <span>{text}</span>
-  {#if bullets.length >= 1}
-      <span>{bullets.length} Bullets Left</span>
-    {:else}
-      <span>{bullets.length} Bullet Left</span>
-    {/if}
+
   </div>
 
   <div class="gun">
