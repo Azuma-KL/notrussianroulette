@@ -1,6 +1,6 @@
 <script>
-  // import { cubicIn } from "svelte/easing";
-  // import { fade } from "svelte/transition";
+  import { cubicIn } from "svelte/easing";
+  import { fade } from "svelte/transition";
 
   let debug = false
   let bullets = $state([1, 2, 3, 4, 5, 6])
@@ -14,6 +14,9 @@
   let liveBullet
   let isDisabled = $state(false)
   let inputChange = $state(false)
+  let isChoiceMode = $state(false)
+  let choiceText1 = $state("")
+  let choiceText2 = $state("")
   let position = $state({cx: 75, cy: 28}) // 1
   let bulletPos = $state([
     {cx: 75, cy: 28},
@@ -79,6 +82,8 @@
     revolverSvg.style.transform = `rotate(${rotation}deg)`
     revolverSvg.style.transition = `transform`
     liveBullet.style.fill = '#D9D9D9'
+    choiceText1 = ""
+    choiceText2 = ""
   }
 
   function inputReset() {
@@ -98,6 +103,16 @@
       <span class="result">Loss</span>
     {/if}
   </div> -->
+
+  <!-- TODO: CHOICE MODE !!!!!!!!!!!!!!!
+  {#if isChoiceMode == true}
+    <span>What will you do:</span>
+    <div class="choices">
+      <input type="text" id="choiceInput" placeholder="If you survive" bind:value={choiceText1}>
+      <input type="text" id="choiceInput" placeholder="If you die" bind:value={choiceText2}>
+    </div>
+  {/if} -->
+
   {#if gamestate == 1}
     <div class="resultBox" style="background-color: mediumseagreen;">
       <span class="result">You Survived</span>
@@ -120,12 +135,6 @@
     {#if debug}
     <span>Tries: {tries}</span>
     {/if} 
-    {:else}
-    {#if bullets.length >= 1}
-      <span>{bullets.length} Bullets Left</span>
-    {:else}
-      <span>{bullets.length} Bullet Left</span>
-    {/if}
   {/if}
 
   {#if debug}
@@ -143,6 +152,13 @@
     {:else if chance >= 1 && inputChange == true}
       <span>You coward</span>
     {/if}
+  {:else}
+    {#if bullets.length >= 1}
+      <span>Will you survive {chance} rounds?</span>
+    {:else}
+      <span>Will you survive {chance} round?</span>
+    {/if}
+
   {/if}
   {#if tries.length == 5}
     <button id="giveUpButton" onclick={() => reset()}>Give Up</button>
@@ -151,7 +167,6 @@
     <button onclick={() => reset()}>Reset</button>
   {/if}
   <span>{text}</span>
-
   </div>
 
   <div class="gun">
@@ -180,6 +195,14 @@
           </g>
       </g>
     </svg>
+    
+    <!-- TODO: CHOICE MODE !!!!!!!!!!!!!!!
+    <span id="choiceCheckbox">
+      <input type="checkbox" bind:checked={isChoiceMode}>
+      Choice Mode
+    </span> -->
+
+    
   </div>
 <!-- </div> -->
 
@@ -198,6 +221,16 @@
   .result {
     font-weight: bold;
   }
+
+  /* TODO: CHOICEMODE
+  .choices {
+    display: flex;
+    gap: 10px;
+  }
+  #choiceInput {
+    width: 100%;
+  } */
+
   /* .main{
     height: 100%;
     min-width: 100%;
@@ -220,6 +253,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
   }
   #revolver { 
     /* 1 */
