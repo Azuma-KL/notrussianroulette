@@ -82,8 +82,8 @@
     revolverSvg.style.transform = `rotate(${rotation}deg)`
     revolverSvg.style.transition = `transform`
     liveBullet.style.fill = '#D9D9D9'
-    choiceText1 = ""
-    choiceText2 = ""
+    // choiceText1 = ""
+    // choiceText2 = ""
   }
 
   function inputReset() {
@@ -124,9 +124,11 @@
   {/if}
 
   {#if shuffleSt == true}
-    {#if tries.length == 5}
+    {#if tries.length == 5 && chance == 6}
       <button id="endItButton" onclick={() => roll()} disabled={isDisabled}>End It All</button>
       <!-- in:fade={{ duration: 1000, delay: 250, easing: cubicIn }} -->
+    {:else if tries.length == 6 && chance == 6}
+      <button onclick={() => roll()} disabled={isDisabled}>Roll</button>
     {:else if gamestate == 2 && tries.length == 6}
       <button disabled={isDisabled}>End It All</button>
     {:else}
@@ -153,10 +155,13 @@
       <span>You coward</span>
     {/if}
   {:else}
-    {#if bullets.length >= 1 && gamestate == 0}
+    {#if tries.length == 5 && gamestate == 0}
+      <span>What will you do?</span>
+    {:else if bullets.length >= 1 && gamestate == 0}
       <span>Will you survive {chance} rounds?</span>
     {:else if bullets.length <= 1 && gamestate == 0}
       <span>Will you survive {chance} round?</span>
+      
     {/if}
 
   {/if}
