@@ -120,6 +120,7 @@
     {#if debug}
     <span>Tries: {tries}</span>
     {/if} 
+    {:else}
     {#if bullets.length >= 1}
       <span>{bullets.length} Bullets Left</span>
     {:else}
