@@ -19,6 +19,7 @@
   let choiceText2 = $state("")
   let choiceForm = $state()
   let choiceCheck
+  let disableShuffle = $state(false)
   let position = $state({cx: 75, cy: 28}) // 1
   let bulletPos = $state([
     {cx: 75, cy: 28},
@@ -66,13 +67,16 @@
     if(!tries.includes(1)){
       tries.push(bullets[0])
       bullets.splice(0, 1)
-      singleRotateSvg() // 1
+      singleRotateSvg() // 1    
+      disableShuffle = true
       if(tries.length == chance && !tries.includes(1)){
         gamestate = 1
         isDisabled = true
+        disableShuffle = true
       } else if (tries.length <= chance && tries.includes(1)) {
         gamestate = 2
         isDisabled = true
+        disableShuffle = true
         liveBullet.style.fill = 'tomato'
       }
     }
@@ -94,6 +98,7 @@
     rotation = 0 
     inputChange = false
     isDisabled = false
+    disableShuffle = false
     revolverSvg.style.transform = `rotate(${rotation}deg)`
     revolverSvg.style.transition = `transform`
     liveBullet.style.fill = '#D9D9D9'
@@ -157,8 +162,8 @@
     {#if tries.length == 5 && chance == 6}
       <button id="endItButton" onclick={() => roll()} disabled={isDisabled}>End It All</button>
       <!-- in:fade={{ duration: 1000, delay: 250, easing: cubicIn }} -->
-    {:else if tries.length == 6 && chance == 6}
-      <button onclick={() => roll()} disabled={isDisabled}>Roll</button>
+    <!-- {:else if tries.length == 6 && chance == 6}
+      <button onclick={() => roll()} disabled={isDisabled}>Roll</button> -->
     {:else if gamestate == 2 && tries.length == 6}
       <button disabled={isDisabled}>End It All</button>
     {:else}
@@ -168,14 +173,14 @@
     <span>Tries: {tries}</span>
     {/if}  -->
   {/if}
-
-  {#if debug}
-  <span>Chances: {bullets}</span>
-  {/if} 
-
-  {#if tries.length <= 0}
-    <button onclick={() => shuffle(bullets)}>Shuffle</button>
-    <span>How many rounds can you survive? {chance}</span>
+  <div class="gun">
+    <!-- {#if debug}
+      <button onclick={() => rotateSvg()}>Rotate</button>
+      <button onclick={() => singleRotateSvg()}>Single Rotation</button>
+    {/if} -->
+    {#if tries.length <= 0}
+    <span>How many rounds can you survive?</span>
+    <span>{chance}</span>
     <input type="range" id="range" min=1 max=6 bind:value={chance} oninput={() => inputReset()}>
     {#if chance >= 5}
       <span>Woah there</span>
@@ -191,24 +196,9 @@
       <span>Will you survive {chance} rounds?</span>
     {:else if bullets.length <= 1 && gamestate == 0}
       <span>Will you survive {chance} round?</span>
-      
     {/if}
-
   {/if}
-  {#if tries.length == 5}
-    <button id="giveUpButton" onclick={() => reset()}>Give Up</button>
-    <!-- in:fade={{ duration: 1000, delay: 1000, easing: cubicIn }} -->
-  {:else}
-    <button onclick={() => reset()}>Reset</button>
-  {/if}
-  <span>{text}</span>
-  </div>
-
-  <div class="gun">
-    <!-- {#if debug}
-      <button onclick={() => rotateSvg()}>Rotate</button>
-      <button onclick={() => singleRotateSvg()}>Single Rotation</button>
-    {/if} -->
+  <button onclick={() => shuffle(bullets)} id="shuffleButton" disabled={disableShuffle}>
     <svg width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g id="revolver" bind:this={revolverSvg}>
           <g id="bullets">
@@ -230,16 +220,27 @@
           </g>
       </g>
     </svg>
+  </button>
     <!-- 2     -->
+  </div>
+  <!-- {#if debug}
+  <span>Chances: {bullets}</span>
+  {/if}  -->
+  {#if tries.length == 5}
+    <button id="giveUpButton" onclick={() => reset()}>Give Up</button>
+    <!-- in:fade={{ duration: 1000, delay: 1000, easing: cubicIn }} -->
+  {:else}
+    <button onclick={() => reset()}>Reset</button>
+  {/if}
+  <span>{text}</span>
     <div class="choiceCheck" bind:this={choiceCheck}>
       <span id="choiceCheckbox">
         <input type="checkbox" bind:checked={isChoiceMode}>
         Choice Mode
       </span>
     </div>
-
-    
   </div>
+
 <!-- </div> -->
 
 <style>
@@ -255,6 +256,27 @@
   }
   .result {
     font-weight: bold;
+  }
+  #shuffleButton {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+    border-radius: 100px;
+    display: flex;
+  }
+  #shuffeButton:focus {
+    outline: none;
+    box-shadow: none;
+  }
+  #shuffleButton:disabled {
+    cursor: default;
+  }
+  #shuffleButton:disabled svg { 
+    pointer-events: none; 
   }
 
   /* TODO: CHOICEMODE
@@ -282,13 +304,17 @@
     justify-content: center;
     width: 250px;
     gap: 5px;
-    min-height: 300px;
+    max-height: 200px;
   }
   .gun {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    gap: 5px;
+  }
+  .gun input {
+    width: 100%;
   }
   #revolver { 
     /* 1 */
