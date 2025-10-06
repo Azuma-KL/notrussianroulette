@@ -14,9 +14,11 @@
   let liveBullet
   let isDisabled = $state(false)
   let inputChange = $state(false)
-  // let isChoiceMode = $state(false)
-  // let choiceText1 = $state("")
-  // let choiceText2 = $state("")
+  let isChoiceMode = $state(false)
+  let choiceText1 = $state("")
+  let choiceText2 = $state("")
+  let choiceForm = $state()
+  let choiceCheck
   let position = $state({cx: 75, cy: 28}) // 1
   let bulletPos = $state([
     {cx: 75, cy: 28},
@@ -53,6 +55,14 @@
   
 
   function roll() {
+    // 2
+    if(isChoiceMode){
+      if(!choiceForm.checkValidity()) {
+        choiceForm.reportValidity()
+        return
+      }
+    }
+
     if(!tries.includes(1)){
       tries.push(bullets[0])
       bullets.splice(0, 1)
@@ -66,6 +76,9 @@
         liveBullet.style.fill = 'tomato'
       }
     }
+    // 2
+    choiceCheck.style.visibility = 'hidden'
+    choiceForm.style.visibility = 'hidden'
   }
 
   function reset() {
@@ -82,8 +95,11 @@
     revolverSvg.style.transform = `rotate(${rotation}deg)`
     revolverSvg.style.transition = `transform`
     liveBullet.style.fill = '#D9D9D9'
-    // choiceText1 = ""
-    // choiceText2 = ""
+    choiceText1 = ""
+    choiceText2 = ""
+    // 2
+    choiceCheck.style.visibility = 'visible'
+    choiceForm.style.visibility = 'visible'
   }
 
   function inputReset() {
@@ -104,23 +120,33 @@
     {/if}
   </div> -->
 
-  <!-- TODO: CHOICE MODE !!!!!!!!!!!!!!!
-  {#if isChoiceMode == true}
-    <span>What will you do:</span>
-    <div class="choices">
-      <input type="text" id="choiceInput" placeholder="If you survive" bind:value={choiceText1}>
-      <input type="text" id="choiceInput" placeholder="If you die" bind:value={choiceText2}>
-    </div>
-  {/if} -->
+  <!-- 2 -->
+  {#if isChoiceMode}
+    <form bind:this={choiceForm}>
+      <span>What will you do:</span>
+      <div class="choices">
+        <input type="text" id="choiceInput" placeholder="If you survive" bind:value={choiceText1} required>
+        <input type="text" id="choiceInput" placeholder="If you die" bind:value={choiceText2} required>
+      </div>
+    </form>
+  {/if}
 
   {#if gamestate == 1}
     <div class="resultBox" style="background-color: mediumseagreen;">
       <span class="result">You Survived</span>
     </div>
+    <!-- 2 -->
+    {#if isChoiceMode}
+    <span>Now you have to {choiceText1}</span>
+    {/if}
   {:else if gamestate == 2}
     <div class="resultBox" style="background-color: tomato;">
       <span class="result">You Died</span>
     </div>
+    <!-- 2 -->
+    {#if isChoiceMode}
+    <span>Now you have to {choiceText2}</span>
+    {/if}
   {/if}
 
   {#if shuffleSt == true}
@@ -134,9 +160,9 @@
     {:else}
       <button onclick={() => roll()} disabled={isDisabled}>Roll</button>
     {/if}
-    {#if debug}
+    <!-- {#if debug}
     <span>Tries: {tries}</span>
-    {/if} 
+    {/if}  -->
   {/if}
 
   {#if debug}
@@ -175,10 +201,10 @@
   </div>
 
   <div class="gun">
-    {#if debug}
+    <!-- {#if debug}
       <button onclick={() => rotateSvg()}>Rotate</button>
       <button onclick={() => singleRotateSvg()}>Single Rotation</button>
-    {/if}
+    {/if} -->
     <svg width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g id="revolver" bind:this={revolverSvg}>
           <g id="bullets">
@@ -200,12 +226,13 @@
           </g>
       </g>
     </svg>
-    
-    <!-- TODO: CHOICE MODE !!!!!!!!!!!!!!!
-    <span id="choiceCheckbox">
-      <input type="checkbox" bind:checked={isChoiceMode}>
-      Choice Mode
-    </span> -->
+    <!-- 2     -->
+    <div class="choiceCheck" bind:this={choiceCheck}>
+      <span id="choiceCheckbox">
+        <input type="checkbox" bind:checked={isChoiceMode}>
+        Choice Mode
+      </span>
+    </div>
 
     
   </div>
@@ -252,7 +279,7 @@
     justify-content: center;
     width: 250px;
     gap: 5px;
-    min-height: 250px;
+    min-height: 100%;
   }
   .gun {
     display: flex;
@@ -264,6 +291,11 @@
     /* 1 */
     transform-origin: center center; 
     transition: transform 0.3s ease-out;
+  }
+  input[type="text"] {
+    padding: 5px;
+    border-radius: 10px;
+    margin-block: 10px;
   }
   /* #giveUpButton {
     border: 2px solid aquamarine;
