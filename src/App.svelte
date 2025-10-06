@@ -79,6 +79,8 @@
     // 2
     choiceCheck.style.visibility = 'hidden'
     choiceForm.style.visibility = 'hidden'
+    choiceCheck.style.position = 'absolute'
+    choiceForm.style.position = 'absolute'
   }
 
   function reset() {
@@ -100,6 +102,8 @@
     // 2
     choiceCheck.style.visibility = 'visible'
     choiceForm.style.visibility = 'visible'
+    choiceCheck.style.position = 'static'
+    choiceForm.style.position = 'static'
   }
 
   function inputReset() {
@@ -243,7 +247,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 50px;
     width: 100%;
     border: 2px solid black;
     border-radius: 10px;
@@ -279,7 +282,7 @@
     justify-content: center;
     width: 250px;
     gap: 5px;
-    min-height: 100%;
+    min-height: 300px;
   }
   .gun {
     display: flex;
